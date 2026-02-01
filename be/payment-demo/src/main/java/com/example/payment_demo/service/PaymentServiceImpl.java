@@ -30,6 +30,11 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentTransaction paymentTransaction = new PaymentTransaction();
         paymentTransaction.setIdempotencyKey(paymentRequestDTO.idempotencyKey());
         paymentTransaction.setAmount(paymentRequestDTO.amount());
+
+        // here successful response is mimicked
+        // but usually this is where external gateway client would be triggered and status would be PENDING
+        // Webhook pattern - call it, provide secret door in controller, update transaction via service
+        // paymentTransaction.setStatus("PENDING");
         paymentTransaction.setStatus("SUCCESS");
 
         PaymentTransaction savedTransaction = paymentRepository.save(paymentTransaction);
