@@ -1,9 +1,11 @@
 package com.example.payment_demo.dto;
 
+import java.math.BigDecimal;
+
 public record PaymentResponseDTO(
         Long id,
         String idempotencyKey,
-        Double amount,
+        BigDecimal amount,
         String status
 ) {
 }

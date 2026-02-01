@@ -3,7 +3,7 @@ package com.example.payment_demo.service;
 import com.example.payment_demo.dto.PaymentRequestDTO;
 import com.example.payment_demo.dto.PaymentResponseDTO;
 import com.example.payment_demo.entity.PaymentTransaction;
-import com.example.payment_demo.respository.PaymentRepository;
+import com.example.payment_demo.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

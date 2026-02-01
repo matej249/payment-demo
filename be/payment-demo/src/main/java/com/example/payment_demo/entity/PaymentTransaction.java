@@ -1,8 +1,10 @@
 package com.example.payment_demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "payments")
@@ -13,21 +15,22 @@ public class PaymentTransaction {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank(message = "Idempotency key is required")
     @Column(name = "idempotency_key", unique = true, nullable = false)
     private String idempotencyKey;
 
-    @Column(name = "amount")
-    @Positive(message = "Amount must be more than zero.")
-    private Double amount;
+    @Column(name = "amount", nullable = false)
+    @DecimalMin(value = "0.01", message = "Amount must be at least 0.01")
+    private BigDecimal amount;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @NotBlank(message = "Status can not be empty.")
     private String status;
 
     public PaymentTransaction() {
     }
 
-    public PaymentTransaction(Long id, String idempotencyKey, Double amount, String status) {
+    public PaymentTransaction(Long id, String idempotencyKey, BigDecimal amount, String status) {
         this.id = id;
         this.idempotencyKey = idempotencyKey;
         this.amount = amount;
@@ -50,11 +53,11 @@ public class PaymentTransaction {
         this.idempotencyKey = idempotencyKey;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
