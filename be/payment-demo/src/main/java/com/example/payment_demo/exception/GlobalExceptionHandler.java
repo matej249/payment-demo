@@ -1,20 +1,20 @@
 package com.example.payment_demo.exception;
 
+import com.example.payment_demo.dto.ErrorResponseDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponseDTO> handleValidationErrors(MethodArgumentNotValidException exception) {
         List<String> errors = exception
                 .getBindingResult()
                 .getFieldErrors()
@@ -22,20 +22,26 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", "error");
-        body.put("errors", errors);
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation failed",
+                System.currentTimeMillis(),
+                errors
+        );
 
-        return ResponseEntity.badRequest().body(body);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntimeErrors(RuntimeException exception){
-        Map<String, String> body = new HashMap<>();
-        body.put("status", "error");
-        body.put("message", exception.getMessage());
+    public ResponseEntity<ErrorResponseDTO> handleRuntimeErrors(RuntimeException exception){
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getMessage(),
+                System.currentTimeMillis(),
+                null
+        );
 
-        return ResponseEntity.badRequest().body(body);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 }
